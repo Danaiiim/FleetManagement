@@ -1,0 +1,111 @@
+package fleet;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class FleetApp {
+
+    private List<Vehicle> vehicles = new ArrayList<>();
+    private Scanner scanner = new Scanner(System.in);
+
+    public void run() {
+        boolean running = true;
+
+        while (running) {
+            System.out.println("""
+                    Fleet Management System
+                    1. Print all vehicles
+                    2. Add new car
+                    3. Add new bus
+                    4. Show total yearly insurance fees
+                    5. Show vehicles older than N years
+                    6. Perform service for all vehicles
+                    7. Quit
+                    """);
+
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 1 -> printVehicles();
+                case 2 -> addCar();
+                case 3 -> addBus();
+                case 4 -> showTotalInsurance();
+                case 5 -> showOldVehicles();
+                case 6 -> serviceAll();
+                case 7 -> running = false;
+                default -> System.out.println("Invalid option");
+            }
+        }
+    }
+
+    private void printVehicles() {
+        if (vehicles.isEmpty()) {
+            System.out.println("No vehicles in the fleet");
+            return;
+        }
+        for (Vehicle v : vehicles) {
+            System.out.println(v);
+        }
+    }
+
+    private void addCar() {
+        System.out.print("Model: ");
+        String model = scanner.nextLine();
+        System.out.print("Year: ");
+        int year = scanner.nextInt();
+        System.out.print("Base price: ");
+        double price = scanner.nextDouble();
+        System.out.print("Number of doors: ");
+        int doors = scanner.nextInt();
+        scanner.nextLine();
+
+        vehicles.add(new Car(model, year, price, doors));
+    }
+
+    private void addBus() {
+        System.out.print("Model: ");
+        String model = scanner.nextLine();
+        System.out.print("Year: ");
+        int year = scanner.nextInt();
+        System.out.print("Base price: ");
+        double price = scanner.nextDouble();
+        System.out.print("Passenger capacity: ");
+        int capacity = scanner.nextInt();
+        scanner.nextLine();
+
+        vehicles.add(new Bus(model, year, price, capacity));
+    }
+
+    private void showTotalInsurance() {
+        double total = 0;
+        for (Vehicle v : vehicles) {
+            total += v.calculateInsuranceFee();
+        }
+        System.out.println("Total insurance fee: " + total);
+    }
+
+    private void showOldVehicles() {
+        System.out.print("Current year: ");
+        int currentYear = scanner.nextInt();
+        System.out.print("Older than N years: ");
+        int n = scanner.nextInt();
+        scanner.nextLine();
+
+        for (Vehicle v : vehicles) {
+            if (v.getAge(currentYear) > n) {
+                System.out.println(v);
+            }
+        }
+    }
+
+    private void serviceAll() {
+        for (Vehicle v : vehicles) {
+            if (v instanceof Servicable s) {
+                s.performService();
+            }
+        }
+    }
+}
+
